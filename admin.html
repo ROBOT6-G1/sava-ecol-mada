@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="mg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espace Admin | Académie Excelsior</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
+
+  <!-- LOGIN MODAL -->
+  <div id="loginModal" class="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-lg flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 p-8 rounded-3xl max-w-md w-full shadow-2xl space-y-6">
+      <div class="text-center space-y-2">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center text-3xl mx-auto border border-indigo-500/30">
+          <i class="fa-solid fa-user-shield"></i>
+        </div>
+        <h2 class="text-2xl font-black text-white">Admin Excelsior</h2>
+        <p class="text-xs text-slate-400">Ampidiro ny mot de passe (Par défaut: 1234)</p>
+      </div>
+      <form id="adminLoginForm" class="space-y-4">
+        <input type="password" id="adminPassword" placeholder="1234" class="w-full px-4 py-3 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-indigo-500 text-center tracking-widest font-bold">
+        <button type="submit" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition">
+          Hiditra Admin
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN DASHBOARD -->
+  <div id="adminDashboard" class="hidden min-h-screen flex flex-col">
+    <header class="bg-slate-900 border-b border-slate-800 px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <span class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-bold"><i class="fa-solid fa-graduation-cap"></i></span>
+        <div>
+          <h1 class="font-black text-white text-base">Académie Excelsior Admin Panel</h1>
+          <p class="text-xs text-slate-400">Fitantanana amin'ny LocalStorage</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="index.html" target="_blank" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold text-slate-300 transition"><i class="fa-solid fa-globe mr-1"></i> Tranonkala</a>
+        <button id="logoutBtn" class="px-4 py-2 rounded-lg bg-rose-600/20 text-rose-400 border border-rose-500/30 hover:bg-rose-600 hover:text-white text-xs font-bold transition">Hiboaka</button>
+      </div>
+    </header>
+
+    <div class="flex-1 grid grid-cols-1 md:grid-cols-4 gap-6 p-6 max-w-7xl mx-auto w-full">
+      <div class="space-y-2">
+        <button onclick="switchTab('registrations')" class="w-full text-left px-4 py-3 rounded-xl bg-slate-900 border border-indigo-500 text-white font-bold text-sm flex items-center justify-between">
+          <span><i class="fa-solid fa-list-check text-indigo-400 mr-2"></i> Inscriptions</span>
+          <span id="regCountBadge" class="bg-indigo-600 text-white text-xs px-2 py-0.5 rounded-full">0</span>
+        </button>
+        <button onclick="switchTab('images')" class="w-full text-left px-4 py-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white font-bold text-sm flex items-center gap-2">
+          <i class="fa-solid fa-image text-indigo-400"></i> Image Canvas Upload (<150KB)
+        </button>
+      </div>
+
+      <div class="md:col-span-3 space-y-6">
+        <div id="tab-registrations" class="bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-users text-indigo-400"></i> Lista Inscriptions azo amin'ny Web</h3>
+          <div id="registrationsList" class="space-y-3">
+            <p class="text-slate-500 text-xs italic">Tsy misy inscription vaovao aloha.</p>
+          </div>
+        </div>
+
+        <div id="tab-images" class="hidden bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-4">
+          <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="fa-solid fa-file-image text-indigo-400"></i> Compressor Sary Canvas</h3>
+          <p class="text-xs text-slate-400">Ampidiro eto ny sary hovainy ho Base64 maivana (<150KB) hampiasaina amin'ny tranonkala.</p>
+          <input type="file" id="imageUploader" accept="image/*" class="block w-full text-xs text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 cursor-pointer">
+          <div id="previewContainer" class="mt-4 hidden space-y-3">
+            <img id="compressedPreview" class="w-48 h-32 object-cover rounded-xl border border-slate-700">
+            <textarea id="base64Output" rows="3" readonly class="w-full p-2 bg-slate-800 border border-slate-700 text-[10px] text-slate-300 rounded-lg font-mono"></textarea>
+            <button onclick="navigator.clipboard.writeText(document.getElementById('base64Output').value); alert('Kopied!');" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs text-indigo-300 font-bold rounded-lg border border-slate-700">Kopia Base64 Code</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="devwebia-badge-container" style="position:fixed;bottom:14px;right:14px;z-index:999999;display:flex;align-items:center;gap:8px;background:rgba(15, 23, 42, 0.92);backdrop-filter:blur(8px);color:#f8fafc;padding:7px 12px 7px 14px;border-radius:9999px;font-family:sans-serif;font-size:12px;font-weight:700;border:1px solid rgba(99, 102, 241, 0.4);"><a href="https://deviaweb-aezo.onrender.com" target="_blank" style="color:#ffffff;text-decoration:none;">Vita amin'i <strong style="color:#818cf8;">DEVWEBIA</strong></a><button type="button" onclick="this.parentElement.remove();" style="background:rgba(255,255,255,0.1);border:none;color:#94a3b8;border-radius:50%;width:18px;height:18px;cursor:pointer;">✕</button></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
